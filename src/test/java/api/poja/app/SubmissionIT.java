@@ -13,6 +13,7 @@ import api.poja.app.file.bucket.BucketComponent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -32,7 +35,7 @@ public class SubmissionIT extends FacadeIT {
 
   @MockBean private BucketComponent bucketComponent;
 
-  @MockBean private EventProducer<?> eventProducer;
+  @MockBean private EventProducer eventProducer;
 
   private static final String BASE_URL = "/submissions";
 
@@ -56,10 +59,13 @@ public class SubmissionIT extends FacadeIT {
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
-    var response = restTemplate.exchange(BASE_URL, HttpMethod.POST, request, Object.class);
+    ResponseEntity<String> response =
+        restTemplate.exchange(BASE_URL, HttpMethod.POST, request, String.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertNotNull(response.getBody());
+    assertTrue(response.getBody().contains("user@example.com"));
+    assertTrue(response.getBody().contains("thumbnailKey"));
     verify(eventProducer).accept(any());
   }
 
@@ -81,17 +87,20 @@ public class SubmissionIT extends FacadeIT {
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
-    var response = restTemplate.exchange(BASE_URL, HttpMethod.POST, request, Object.class);
+    ResponseEntity<String> response =
+        restTemplate.exchange(BASE_URL, HttpMethod.POST, request, String.class);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   void listSubmissionsReturns200WithArray() {
-    var response = restTemplate.exchange(BASE_URL, HttpMethod.GET, null, List.class);
+    ResponseEntity<String> response =
+        restTemplate.exchange(BASE_URL, HttpMethod.GET, null, String.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
+    assertTrue(response.getBody().startsWith("["));
   }
 
   @Test
@@ -114,12 +123,13 @@ public class SubmissionIT extends FacadeIT {
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
-    restTemplate.exchange(BASE_URL, HttpMethod.POST, request, Object.class);
+    restTemplate.exchange(BASE_URL, HttpMethod.POST, request, String.class);
 
-    var listResponse = restTemplate.exchange(BASE_URL, HttpMethod.GET, null, List.class);
+    ResponseEntity<String> listResponse =
+        restTemplate.exchange(BASE_URL, HttpMethod.GET, null, String.class);
 
     assertEquals(HttpStatus.OK, listResponse.getStatusCode());
-    assertTrue(((List<?>) listResponse.getBody()).size() > 0);
+    assertTrue(listResponse.getBody().contains("persist@example.com"));
   }
 
   private byte[] createTestPng() throws Exception {
