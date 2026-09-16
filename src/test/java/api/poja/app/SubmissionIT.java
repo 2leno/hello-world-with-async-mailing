@@ -14,7 +14,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.bean.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,14 +23,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 public class SubmissionIT extends FacadeIT {
 
-  @Autowired private RestTemplate restTemplate;
+  @Autowired private TestRestTemplate restTemplate;
 
-  @MockBean
-  private BucketComponent bucketComponent;
+  @MockBean private BucketComponent bucketComponent;
 
   @MockBean private Mailer mailer;
 
@@ -43,18 +42,19 @@ public class SubmissionIT extends FacadeIT {
     headers.setContentType(MULTIPART_FORM_DATA);
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    body.add("file", new ByteArrayResource(pngBytes) {
-      @Override
-      public String getFilename() {
-        return "test.png";
-      }
-    });
+    body.add(
+        "file",
+        new ByteArrayResource(pngBytes) {
+          @Override
+          public String getFilename() {
+            return "test.png";
+          }
+        });
     body.add("email", "user@example.com");
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
-    var response =
-        restTemplate.exchange(BASE_URL, HttpMethod.POST, request, Object.class);
+    var response = restTemplate.exchange(BASE_URL, HttpMethod.POST, request, Object.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertNotNull(response.getBody());
@@ -66,26 +66,26 @@ public class SubmissionIT extends FacadeIT {
     headers.setContentType(MULTIPART_FORM_DATA);
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    body.add("file", new ByteArrayResource("not an image".getBytes()) {
-      @Override
-      public String getFilename() {
-        return "test.txt";
-      }
-    });
+    body.add(
+        "file",
+        new ByteArrayResource("not an image".getBytes()) {
+          @Override
+          public String getFilename() {
+            return "test.txt";
+          }
+        });
     body.add("email", "user@example.com");
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
-    var response =
-        restTemplate.exchange(BASE_URL, HttpMethod.POST, request, Object.class);
+    var response = restTemplate.exchange(BASE_URL, HttpMethod.POST, request, Object.class);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
   void listSubmissionsReturns200WithArray() {
-    var response =
-        restTemplate.exchange(BASE_URL, HttpMethod.GET, null, List.class);
+    var response = restTemplate.exchange(BASE_URL, HttpMethod.GET, null, List.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
@@ -99,20 +99,21 @@ public class SubmissionIT extends FacadeIT {
     headers.setContentType(MULTIPART_FORM_DATA);
 
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    body.add("file", new ByteArrayResource(pngBytes) {
-      @Override
-      public String getFilename() {
-        return "test2.png";
-      }
-    });
+    body.add(
+        "file",
+        new ByteArrayResource(pngBytes) {
+          @Override
+          public String getFilename() {
+            return "test2.png";
+          }
+        });
     body.add("email", "persist@example.com");
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
     restTemplate.exchange(BASE_URL, HttpMethod.POST, request, Object.class);
 
-    var listResponse =
-        restTemplate.exchange(BASE_URL, HttpMethod.GET, null, List.class);
+    var listResponse = restTemplate.exchange(BASE_URL, HttpMethod.GET, null, List.class);
 
     assertEquals(HttpStatus.OK, listResponse.getStatusCode());
     assertTrue(((List<?>) listResponse.getBody()).size() > 0);
