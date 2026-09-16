@@ -9,11 +9,11 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 
 import api.poja.app.conf.FacadeIT;
 import api.poja.app.endpoint.event.EventProducer;
+import api.poja.app.endpoint.event.model.ThumbnailRequested;
 import api.poja.app.file.bucket.BucketComponent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
-import java.util.Map;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -35,7 +34,7 @@ public class SubmissionIT extends FacadeIT {
 
   @MockBean private BucketComponent bucketComponent;
 
-  @MockBean private EventProducer eventProducer;
+  @MockBean private EventProducer<ThumbnailRequested> eventProducer;
 
   private static final String BASE_URL = "/submissions";
 
