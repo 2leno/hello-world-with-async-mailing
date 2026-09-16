@@ -29,8 +29,7 @@ public class SubmissionController {
     } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     } catch (Exception e) {
-      return ResponseEntity.internalServerError()
-          .body(new ErrorResponse("Internal server error."));
+      return ResponseEntity.internalServerError().body(new ErrorResponse("Internal server error."));
     }
   }
 
@@ -40,8 +39,7 @@ public class SubmissionController {
       List<Submission> submissions = submissionService.listAll();
       return ResponseEntity.ok(submissions);
     } catch (Exception e) {
-      return ResponseEntity.internalServerError()
-          .body(new ErrorResponse("Internal server error."));
+      return ResponseEntity.internalServerError().body(new ErrorResponse("Internal server error."));
     }
   }
 }
