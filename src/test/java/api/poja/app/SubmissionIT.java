@@ -13,7 +13,11 @@ import api.poja.app.endpoint.event.model.ThumbnailRequested;
 import api.poja.app.file.bucket.BucketComponent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.sql.Connection;
+import java.sql.Statement;
 import javax.imageio.ImageIO;
+import javax.sql.DataSource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,11 +35,21 @@ public class SubmissionIT extends FacadeIT {
 
   @Autowired private TestRestTemplate restTemplate;
 
+  @Autowired private DataSource dataSource;
+
   @MockBean private BucketComponent bucketComponent;
 
   @MockBean private EventProducer<ThumbnailRequested> eventProducer;
 
   private static final String BASE_URL = "/submissions";
+
+  @BeforeEach
+  void cleanTable() throws Exception {
+    try (Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement()) {
+      stmt.execute("DELETE FROM submission");
+    }
+  }
 
   @Test
   void createSubmissionWithValidPngReturns201() throws Exception {
