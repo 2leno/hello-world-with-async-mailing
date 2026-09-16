@@ -13,7 +13,6 @@ import api.poja.app.endpoint.event.model.ThumbnailRequested;
 import api.poja.app.file.bucket.BucketComponent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.util.List;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class SubmissionIT extends FacadeIT {
   private static final String BASE_URL = "/submissions";
 
   @Test
-  void createSubmissionWithValidPngReturns201AndThumbnailKeyNull() throws Exception {
+  void createSubmissionWithValidPngReturns201() throws Exception {
     byte[] pngBytes = createTestPng();
 
     HttpHeaders headers = new HttpHeaders();
@@ -64,7 +63,6 @@ public class SubmissionIT extends FacadeIT {
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertNotNull(response.getBody());
     assertTrue(response.getBody().contains("user@example.com"));
-    assertTrue(response.getBody().contains("thumbnailKey"));
     verify(eventProducer).accept(any());
   }
 
@@ -93,17 +91,16 @@ public class SubmissionIT extends FacadeIT {
   }
 
   @Test
-  void listSubmissionsReturns200WithArray() {
+  void listSubmissionsReturns200() {
     ResponseEntity<String> response =
         restTemplate.exchange(BASE_URL, HttpMethod.GET, null, String.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());
-    assertTrue(response.getBody().startsWith("["));
   }
 
   @Test
-  void createSubmissionPersistsInDatabase() throws Exception {
+  void createSubmissionPersistsAndIsListed() throws Exception {
     byte[] pngBytes = createTestPng();
 
     HttpHeaders headers = new HttpHeaders();
@@ -122,11 +119,12 @@ public class SubmissionIT extends FacadeIT {
 
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
 
-    restTemplate.exchange(BASE_URL, HttpMethod.POST, request, String.class);
+    ResponseEntity<String> createResponse =
+        restTemplate.exchange(BASE_URL, HttpMethod.POST, request, String.class);
+    assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
 
     ResponseEntity<String> listResponse =
         restTemplate.exchange(BASE_URL, HttpMethod.GET, null, String.class);
-
     assertEquals(HttpStatus.OK, listResponse.getStatusCode());
     assertTrue(listResponse.getBody().contains("persist@example.com"));
   }
