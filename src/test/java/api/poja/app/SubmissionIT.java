@@ -14,7 +14,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.bean.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -28,9 +28,9 @@ public class SubmissionIT extends FacadeIT {
 
   @Autowired private TestRestTemplate restTemplate;
 
-  @MockBean private BucketComponent bucketComponent;
+  @MockitoBean private BucketComponent bucketComponent;
 
-  @MockBean private Mailer mailer;
+  @MockitoBean private Mailer mailer;
 
   private static final String BASE_URL = "/submissions";
 
