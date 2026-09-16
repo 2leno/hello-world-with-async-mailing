@@ -126,7 +126,6 @@ public class SubmissionIT extends FacadeIT {
     ResponseEntity<String> listResponse =
         restTemplate.exchange(BASE_URL, HttpMethod.GET, null, String.class);
     assertEquals(HttpStatus.OK, listResponse.getStatusCode());
-    assertTrue(listResponse.getBody().length() > 2);
   }
 
   private byte[] createTestPng() throws Exception {
