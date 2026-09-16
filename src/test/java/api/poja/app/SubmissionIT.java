@@ -3,11 +3,13 @@ package api.poja.app;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 
 import api.poja.app.conf.FacadeIT;
+import api.poja.app.endpoint.event.EventProducer;
 import api.poja.app.file.bucket.BucketComponent;
-import api.poja.app.mail.Mailer;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -30,7 +32,7 @@ public class SubmissionIT extends FacadeIT {
 
   @MockBean private BucketComponent bucketComponent;
 
-  @MockBean private Mailer mailer;
+  @MockBean private EventProducer<?> eventProducer;
 
   private static final String BASE_URL = "/submissions";
 
@@ -58,6 +60,7 @@ public class SubmissionIT extends FacadeIT {
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertNotNull(response.getBody());
+    verify(eventProducer).accept(any());
   }
 
   @Test
