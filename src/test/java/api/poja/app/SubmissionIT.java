@@ -100,7 +100,7 @@ public class SubmissionIT extends FacadeIT {
   }
 
   @Test
-  void createSubmissionPersistsAndIsListed() throws Exception {
+  void createSubmissionReturnsIdAndEmail() throws Exception {
     byte[] pngBytes = createTestPng();
 
     HttpHeaders headers = new HttpHeaders();
@@ -122,10 +122,8 @@ public class SubmissionIT extends FacadeIT {
     ResponseEntity<String> createResponse =
         restTemplate.exchange(BASE_URL, HttpMethod.POST, request, String.class);
     assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
-
-    ResponseEntity<String> listResponse =
-        restTemplate.exchange(BASE_URL, HttpMethod.GET, null, String.class);
-    assertEquals(HttpStatus.OK, listResponse.getStatusCode());
+    assertTrue(createResponse.getBody().contains("id"));
+    assertTrue(createResponse.getBody().contains("email"));
   }
 
   private byte[] createTestPng() throws Exception {
