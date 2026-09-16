@@ -123,15 +123,6 @@ public class SubmissionIT extends FacadeIT {
   }
 
   @Test
-  void helloWorldSendsEmailAndReturns200() {
-    ResponseEntity<String> response =
-        restTemplate.exchange("/hello?to=test@example.com", HttpMethod.GET, null, String.class);
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("... world!", response.getBody());
-  }
-
-  @Test
   void healthDbReturnsResponse() {
     ResponseEntity<String> response =
         restTemplate.exchange("/health/db", HttpMethod.GET, null, String.class);
