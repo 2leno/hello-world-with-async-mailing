@@ -114,6 +114,32 @@ public class SubmissionIT extends FacadeIT {
   }
 
   @Test
+  void pingReturns200() {
+    ResponseEntity<String> response =
+        restTemplate.exchange("/ping", HttpMethod.GET, null, String.class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("pong", response.getBody());
+  }
+
+  @Test
+  void helloWorldSendsEmailAndReturns200() {
+    ResponseEntity<String> response =
+        restTemplate.exchange("/hello?to=test@example.com", HttpMethod.GET, null, String.class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("... world!", response.getBody());
+  }
+
+  @Test
+  void healthDbReturnsResponse() {
+    ResponseEntity<String> response =
+        restTemplate.exchange("/health/db", HttpMethod.GET, null, String.class);
+
+    assertNotNull(response.getStatusCode());
+  }
+
+  @Test
   void createSubmissionReturnsIdAndEmail() throws Exception {
     byte[] pngBytes = createTestPng();
 

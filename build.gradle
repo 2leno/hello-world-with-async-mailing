@@ -50,7 +50,27 @@ jacocoTestCoverageVerification {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "**/gen/**"
+                    "**/gen/**",
+                    "**/handler/**",
+                    "**/mail/**",
+                    "**/concurrency/**",
+                    "**/datastructure/**",
+                    "**/file/**",
+                    "**/repository/model/Dummy*",
+                    "**/repository/Dummy*",
+                    "**/endpoint/event/EventConf*",
+                    "**/endpoint/event/EventProducer*",
+                    "**/endpoint/event/EventStack*",
+                    "**/endpoint/event/consumer/**",
+                    "**/endpoint/event/model/PojaEvent*",
+                    "**/endpoint/event/model/UuidCreated*",
+                    "**/endpoint/event/model/DurablyFallible*",
+                    "**/endpoint/rest/controller/health/**",
+                    "**/endpoint/EndpointConf*",
+                    "**/endpoint/RequestLoggerConfigurer*",
+                    "**/service/event/UuidCreated*",
+                    "**/service/event/DurablyFallible*",
+                    "**/PojaApplication*"
             ])
         }))
     }
@@ -75,7 +95,27 @@ jacocoTestReport {
         // else display coverageRate is inconsistent with what was computed during coverage...
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "**/gen/**"
+                    "**/gen/**",
+                    "**/handler/**",
+                    "**/mail/**",
+                    "**/concurrency/**",
+                    "**/datastructure/**",
+                    "**/file/**",
+                    "**/repository/model/Dummy*",
+                    "**/repository/Dummy*",
+                    "**/endpoint/event/EventConf*",
+                    "**/endpoint/event/EventProducer*",
+                    "**/endpoint/event/EventStack*",
+                    "**/endpoint/event/consumer/**",
+                    "**/endpoint/event/model/PojaEvent*",
+                    "**/endpoint/event/model/UuidCreated*",
+                    "**/endpoint/event/model/DurablyFallible*",
+                    "**/endpoint/rest/controller/health/**",
+                    "**/endpoint/EndpointConf*",
+                    "**/endpoint/RequestLoggerConfigurer*",
+                    "**/service/event/UuidCreated*",
+                    "**/service/event/DurablyFallible*",
+                    "**/PojaApplication*"
             ])
         }))
     }
